@@ -26,13 +26,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const dotenv = __importStar(require("dotenv"));
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const models_1 = require("./models");
 const complaints_1 = __importDefault(require("./routes/complaints"));
 const auth_1 = __importDefault(require("./routes/auth"));
-const swaggerDocument = __importStar(require("../swagger.json")); // Adjust the path if necessary
+const swaggerDocument = __importStar(require("../swagger.json"));
+dotenv.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
 app.use(body_parser_1.default.json());

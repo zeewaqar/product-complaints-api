@@ -1,10 +1,12 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User from '../models/user'; // Adjust the import if necessary
+import * as dotenv from 'dotenv';
+import User from '../models/user';
+dotenv.config();
 
 const router = express.Router();
-const SECRET_KEY = 'your_secret_key';
+const SECRET_KEY = process.env.SECRET_KEY || 'default_secret_key'; // Use the environment variable or a default value
 
 // Register a new user
 router.post('/register', async (req, res) => {

@@ -1,10 +1,13 @@
+import * as dotenv from 'dotenv';
 import express from 'express';
 import bodyParser from 'body-parser';
 import swaggerUi from 'swagger-ui-express';
 import { sequelize } from './models';
 import complaintRoutes from './routes/complaints';
 import authRoutes from './routes/auth';
-import * as swaggerDocument from '../swagger.json'; // Adjust the path if necessary
+import * as swaggerDocument from '../swagger.json';
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;

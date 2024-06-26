@@ -32,8 +32,13 @@ This is a RESTful API for managing product complaints. The API allows for creati
    Create a `.env` file in the root directory and add the following:
 
    ```plaintext
-   SECRET_KEY=your_secret_key
-   DATABASE_URL=sqlite::memory:
+    SECRET_KEY=your_secret_key
+    DATABASE_URL=./database.sqlite
+    DB_POOL_MAX=10
+    DB_POOL_MIN=0
+    DB_POOL_ACQUIRE=30000
+    DB_POOL_IDLE=10000
+    PORT=3000
    ```
 
 4. Run database migrations and seed data:
