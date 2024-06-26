@@ -1,0 +1,620 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Product Complaints API",
+      "version": "1.0.0"
+    },
+    "paths": {
+      "/register": {
+        "post": {
+          "summary": "Register a new user",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterUser"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "username": "sampleuser",
+                      "password": "password123"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "User registered successfully",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid input or username already taken",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "500": {
+              "description": "Server error",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "/login": {
+        "post": {
+          "summary": "Login a user",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginUser"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "username": "sampleuser",
+                      "password": "password123"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "User logged in successfully",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid username or password",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "500": {
+              "description": "Server error",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "/complaints": {
+        "post": {
+          "summary": "Create a new complaint",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Complaint"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "productId": 1,
+                      "customer": {
+                        "name": "John Doe",
+                        "email": "john.doe@example.com"
+                      },
+                      "description": "Product stopped working after one week."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Complaint created successfully",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/ComplaintResponse"
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid input",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "500": {
+              "description": "Server error",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        },
+        "get": {
+          "summary": "Get all complaints with pagination, search, and filter",
+          "parameters": [
+            {
+              "name": "page",
+              "in": "query",
+              "schema": {
+                "type": "integer",
+                "default": 1
+              }
+            },
+            {
+              "name": "pageSize",
+              "in": "query",
+              "schema": {
+                "type": "integer",
+                "default": 10
+              }
+            },
+            {
+              "name": "productId",
+              "in": "query",
+              "schema": {
+                "type": "integer"
+              }
+            },
+            {
+              "name": "customerName",
+              "in": "query",
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "status",
+              "in": "query",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "List of complaints",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "complaints": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/Complaint"
+                        }
+                      },
+                      "total": {
+                        "type": "integer"
+                      },
+                      "pages": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "examples": {
+                    "example-1": {
+                      "value": {
+                        "complaints": [
+                          {
+                            "id": 1,
+                            "productId": 1,
+                            "customerName": "John Doe",
+                            "customerEmail": "john.doe@example.com",
+                            "description": "Product stopped working after one week.",
+                            "status": "Open",
+                            "createdAt": "2023-05-28T14:00:00Z",
+                            "updatedAt": "2023-05-28T14:00:00Z"
+                          },
+                          {
+                            "id": 2,
+                            "productId": 2,
+                            "customerName": "Jane Smith",
+                            "customerEmail": "jane.smith@example.com",
+                            "description": "Received the wrong product.",
+                            "status": "InProgress",
+                            "createdAt": "2023-05-29T14:00:00Z",
+                            "updatedAt": "2023-05-29T14:00:00Z"
+                          }
+                        ],
+                        "total": 2,
+                        "pages": 1
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Server error",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        }
+      },
+      "/complaints/{id}": {
+        "get": {
+          "summary": "Get a complaint by ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Complaint retrieved successfully",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/Complaint"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "id": 1,
+                      "productId": 1,
+                      "customerName": "John Doe",
+                      "customerEmail": "john.doe@example.com",
+                      "description": "Product stopped working after one week.",
+                      "status": "Open",
+                      "createdAt": "2023-05-28T14:00:00Z",
+                      "updatedAt": "2023-05-28T14:00:00Z"
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Complaint not found",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "500": {
+              "description": "Server error",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        },
+        "put": {
+          "summary": "Update a complaint by ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Complaint"
+                },
+                "examples": {
+                  "example-1": {
+                    "value": {
+                      "description": "Updated description of the problem",
+                      "status": "InProgress"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Complaint updated successfully",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/Complaint"
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid status transition",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "404": {
+              "description": "Complaint not found",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "500": {
+              "description": "Server error",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        },
+        "delete": {
+          "summary": "Cancel a complaint by ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Complaint canceled successfully",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            },
+            "404": {
+              "description": "Complaint not found",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "500": {
+              "description": "Server error",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        }
+      },
+      "/notifications": {
+        "get": {
+          "summary": "Get all notifications",
+          "responses": {
+            "200": {
+              "description": "List of notifications",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Notification"
+                    }
+                  },
+                  "examples": {
+                    "example-1": {
+                      "value": [
+                        {
+                          "id": 1,
+                          "complaintId": 1,
+                          "message": "Complaint status updated to InProgress",
+                          "date": "2023-05-28T15:00:00Z"
+                        },
+                        {
+                          "id": 2,
+                          "complaintId": 2,
+                          "message": "Complaint status updated to Resolved",
+                          "date": "2023-05-29T16:00:00Z"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Server error",
+              "content": {
+                "application/json": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ]
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "RegisterUser": {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          }
+        },
+        "LoginUser": {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          }
+        },
+        "LoginResponse": {
+          "type": "object",
+          "properties": {
+            "token": {
+              "type": "string"
+            }
+          }
+        },
+        "Complaint": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "productId": {
+              "type": "integer"
+            },
+            "customerName": {
+              "type": "string"
+            },
+            "customerEmail": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "updatedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "Notification": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "complaintId": {
+              "type": "integer"
+            },
+            "message": {
+              "type": "string"
+            },
+            "date": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "ComplaintResponse": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string"
+            },
+            "complaint": {
+              "$ref": "#/components/schemas/Complaint"
+            }
+          }
+        },
+        "MessageResponse": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string"
+            }
+          }
+        },
+        "Error": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "securitySchemes": {
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      }
+    },
+    "security": [
+      {
+        "bearerAuth": []
+      }
+    ]
+  }
+  
