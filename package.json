@@ -5,8 +5,9 @@
   "scripts": {
     "start": "ts-node src/server.ts",
     "build": "tsc",
-    "test": "jest --config jest.config.ts",
-    "lint": "eslint . --ext .ts"
+    "test": "jest --config jest.config.ts --detectOpenHandles",
+    "lint": "eslint . --ext .ts",
+    "sample-data": "ts-node src/sampleData.ts"
   },
   "keywords": [],
   "author": "",
